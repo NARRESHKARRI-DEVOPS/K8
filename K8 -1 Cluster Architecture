@@ -1,0 +1,147 @@
+
+
+
+
+
+Hello World… Kubernetes has become a cornerstone in modern cloud-native infrastructure, revolutionizing the way organizations manage and scale their applications. As an open-source container orchestration platform, Kubernetes simplifies the deployment, scaling, and operation of containerized applications across clusters of machines. In today’s fast-paced tech landscape, where agility, scalability, and efficiency are key, Kubernetes enables developers and businesses to build resilient, automated systems, fostering innovation and reducing operational complexity. Its widespread adoption has made it an essential tool for managing microservices architectures, hybrid clouds, and multi-cloud environments. So, let’s get started with how the K8s architecture looks like…
+
+Overview:
+Intro
+Control Plane
+Components of Control Plane
+Worker Node
+Components of Worker Node
+Example
+Architecture Diagram
+Introduction
+In a Kubernetes (K8s) cluster, the architecture is organized into two main components: the control plane and the worker nodes. Together, these components form a powerful system for managing containerized applications at scale.
+
+Control Plane:
+It is the brain of the Kubernetes cluster.
+The control plane acts as the central management hub for the entire Kubernetes cluster.
+It oversees the overall state and behavior of the cluster, ensuring everything is functioning as intended.
+The control plane maintains the desired state of the cluster i.e., it continuously compares the current state of the cluster (e.g., the number of pods running) with the desired state (as defined by the user).
+If there are any discrepancies, it takes corrective actions, such as starting new pods or shutting down excess ones.
+The control plane manages configurations for applications and services within the cluster, storing this information in a consistent manner to ensure reliability and reproducibility.
+Components of the Control Plane
+etcd:
+etcd is a reliable distributed key-value store that is simple, secure, and fast.
+It maintains the current status, desired state, configuration, and metadata for all Kubernetes objects.
+etcd is a reliable distributed key-value store that is simple, secure, and fast.
+It maintains the current status, desired state, configuration, and metadata for all Kubernetes objects.
+What info it stores?
+Cluster Configuration and Metadata: Nodes, Namespaces, Resource Quotas, Cluster Roles and Role Bindings (RBAC)
+Workloads: Pods, Deployments, ReplicaSets, DaemonSets, StatefulSets, Jobs, and CronJobs.
+Services and Networking: Services, Endpoints, Ingress, Network Policies, and ConfigMaps.
+Secrets and Credentials: Secrets and Service Accounts Tokens.
+Persistent Storage: Persistent Volumes (PVs), Persistent Volume Claims (PVCs), and Storage Classes.
+Schedulers and Controllers: Controllers, Events, Scheduler Info.
+Custom Resource Definitions (CRDs)
+Admission Controllers: Admission Webhooks
+Autoscaling Data: Horizontal Pod Autoscalers (HPA)
+API Server Configuration: API Server Discovery Info
+Federated Resources
+2. kube-api server:
+
+It is a central component of the Kubernetes control plane, responsible for managing communication within the cluster.
+A primary management component.
+It exposes a RESTful API that allows users and components to perform operations on Kubernetes resources like pods, services, and deployments.
+Allows users and other components to create, read, update, and delete Kubernetes resources.
+Key functionalities:
+RESTful Interface
+Resource Management
+Authentication and Authorization
+Admission Control
+Communication with etcd
+Event Notification
+Interaction with Controllers
+Error Handling
+3. kube-controller-manager
+
+It is a core component of Kubernetes responsible for managing controllers that regulate the state of the cluster.
+Each controller is a separate process, but they are all run within a single binary called kube-controller-manager.
+Continuously monitors the cluster state via the API server and makes decisions to bring the cluster closer to the desired state as defined in the Kubernetes specifications.
+In a high-availability setup, multiple instances of kube-controller-manager can run, and they use leader election to ensure that only one instance actively manages the controllers at any given time.
+Few Controllers:
+Replication Controller
+Deployment Controller
+Node Controller
+Namespace Controller
+Ingress Controller
+and many more…
+4. kube-scheduler:
+
+It is a key component of Kubernetes responsible for deciding which node an unscheduled pod will run on.
+i.e., the scheduler watches for newly created pods that have no assigned nodes and evaluates them against available nodes.
+The kube-scheduler plays a crucial role in ensuring efficient and optimal placement of pods in a Kubernetes cluster, helping to balance workloads and maintain resource availability.
+Kubernetes supports custom schedulers, allowing users to implement their scheduling logic.
+Scheduling Process:
+When a pod is created, it enters the pending state if no nodes are available for scheduling.
+The scheduler filters out nodes that do not meet the pod’s requirements (e.g., resource limits)
+The remaining nodes are ranked based on various factors (uses a priority function to assign a score to the nodes on a scale from 0 to 10)
+Worker Nodes
+Also known as minions, are where the actual applications run.
+Each worker node is managed by the control plane and runs the necessary services to execute and manage containerized applications.
+They provide the necessary resources (CPU, memory, storage) for executing these applications.
+Worker nodes provide isolation between different applications and workloads, ensuring that one workload does not interfere with another.
+They also implement security measures to protect the applications running on them.
+Components of the Worker Node
+kubelet:
+It is a crucial component of Kubernetes, responsible for managing the lifecycle of containers on individual nodes in a Kubernetes cluster.
+It runs on each node, ensuring that the containers described in PodSpecs are running as expected.
+The kubelet constantly checks the health and status of pods and containers running on the node.
+If a container fails, kubelet can restart it based on its configuration.
+It gathers resource utilization data (CPU, memory, etc.) and reports to the control plane, helping in scheduling and scaling decisions.
+Kubelet communicates with the container runtime (e.g., Docker, containerd) to start, stop, and manage containers.
+2. Container Runtime Engine:
+
+It is a crucial component responsible for running and managing the containers.
+Docker, containerd, CRI-O, gVisor
+Container Runtime Interface is an API in Kubernetes that allows Kubernetes to interact with different container runtimes.
+This separation enables Kubernetes to support multiple container runtimes while maintaining a consistent interface.
+3. kube-proxy:
+
+It is a critical component of Kubernetes that manages network communication within a cluster.
+A pod network is an internal virtual network that extends across all nodes in the cluster, allowing all pods to connect to it.
+It is a process that runs on each node in the cluster.
+When a Service is created, kube-proxy sets up the necessary routing rules.
+For example, if a Service with a cluster IP is created, kube-proxy ensures that any traffic sent to that IP is appropriately routed to one of the Pods backing the Service.
+Example:
+To better understand Kubernetes architecture, imagine a restaurant where various roles and operations come together to provide a smooth dining experience.
+In this analogy, the Kubernetes cluster functions like a restaurant, with its management and staff working together to deliver services efficiently.
+Let’s dive deeper into this analogy to see how Kubernetes manages applications with the same coordination and efficiency as a well-run restaurant.
+Kubernetes Cluster = Restaurant
+The restaurant represents the whole Kubernetes cluster, a system where various operations (like seating, cooking, and serving) work together to provide a seamless experience.
+Master Node (Control Plane) = Restaurant Management
+This central management system oversees the entire restaurant’s operations, just like the control plane in Kubernetes manages the cluster.
+API Server = Front Desk
+Role in the Restaurant: The front desk is the first point of contact, where customer orders are taken and directed to the right place.
+Role in Kubernetes: The API server is the main entry point to the Kubernetes cluster. It validates, processes, and distributes requests to the appropriate components.
+Controller Manager = Restaurant Manager
+Role in the Restaurant: The restaurant manager monitors the workflow, ensuring enough food is prepared, and adjusting staffing levels as needed.
+Role in Kubernetes: The controller manager monitors the cluster and makes sure the desired state is maintained. It adds or removes resources to keep everything running smoothly.
+Scheduler = Kitchen Dispatcher
+Role in the Restaurant: The dispatcher assigns orders to chefs based on the complexity of dishes and the chef’s current workload.
+Role in Kubernetes: The scheduler assigns new workloads (pods) to the most appropriate nodes, optimizing resource use and balancing the load.
+Etcd = Restaurant Details
+Role in the Restaurant: Tracks the cash details, staff details, dishes details, supplies details and all.
+Role in Kubernetes: Etcd stores the cluster’s configuration and state, keeping a record of all desired states and enabling consistency across nodes.
+Worker Nodes = Restaurant Staff
+Each worker node represents the restaurant’s staff who carry out tasks like preparing food and serving customers.
+Kubelet = Chef
+Role in the Restaurant: The chef follows instructions from the front desk and prepares dishes according to the orders.
+Role in Kubernetes: Kubelet ensures that the containers (workloads) assigned to the worker node are running and reports their status back to the API server.
+Kube-Proxy = Waitstaff
+Role in the Restaurant: The waitstaff ensures that food is delivered to the right table and manages the flow of orders.
+Role in Kubernetes: Kube-Proxy routes network traffic to the correct pods, managing internal communication and external access to services.
+Container Runtime = Kitchen
+Role in the Restaurant: The kitchen is where the ingredients are transformed into dishes.
+Role in Kubernetes: The container runtime (like Docker) runs containers on the worker nodes, executing workloads based on the instructions from the API server.
+Pods = Dishes
+Role in the Restaurant: Each dish is composed of different elements (e.g., burger = bun + patty + toppings). Multiple dishes can be served at once. Role in Kubernetes: Pods are the smallest deployable units and can contain one or more containers. These containers work together, just like components of a dish, sharing resources like networking and storage.
+Services = Menu
+Role in the Restaurant: The menu provides customers with a list of available dishes and directs them to what they can order.
+Role in Kubernetes: Services abstract a group of pods, providing stable endpoints for accessing them. They facilitate load balancing and routing, similar to how the menu organizes available dishes.
+Namespaces = Restaurant Sections
+Role in the Restaurant: The restaurant might have different sections (e.g., family area, bar, outdoor patio) to organize the space and serve different types of customers.
+Role in Kubernetes: Namespaces allow for organization within the cluster, creating separate environments (e.g., development, production) for different workloads.
