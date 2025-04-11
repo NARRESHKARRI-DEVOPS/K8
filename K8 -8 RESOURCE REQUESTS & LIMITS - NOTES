@@ -1,0 +1,68 @@
+KUBERNETES RESOURCE REQUESTS & LIMITS - NOTES
+=============================================
+
+WHAT ARE REQUESTS AND LIMITS?
+-----------------------------
+- REQUEST:
+    Minimum amount of CPU/Memory guaranteed to the container.
+    The scheduler uses this to place pods on appropriate nodes.
+
+- LIMIT:
+    Maximum amount of CPU/Memory the container is allowed to use.
+    Prevents the container from overusing resources.
+
+
+ADVANTAGES OF DEFINING REQUESTS & LIMITS
+----------------------------------------
+1. BETTER SCHEDULING:
+    Kubernetes schedules pods based on available resources more efficiently.
+
+2. AVOID RESOURCE HOGGING:
+    Limits prevent a pod from consuming all node resources.
+
+3. STABLE CLUSTER:
+    Reduces risk of crashes or slowdowns due to unplanned usage spikes.
+
+4. COST OPTIMIZATION:
+    Helps in right-sizing workloads and controlling cloud costs.
+
+
+EXAMPLE DEPLOYMENT YAML WITH RESOURCES
+--------------------------------------
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: javawebapp-deployment
+  namespace: naresh
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: javawebapp
+  template:
+    metadata:
+      labels:
+        app: javawebapp
+    spec:
+      containers:
+      - name: javawebapp
+        image: kkeducationb2/java-webapp:1.1
+        ports:
+        - containerPort: 8080
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+
+
+EXPLANATION
+-----------
+- CPU 250m = 0.25 of a single core is requested (guaranteed).
+- CPU 500m = Max 0.5 cores can be used (upper limit).
+- Memory 256Mi = Minimum guaranteed memory.
+- Memory 512Mi = Maximum allowed memory.
+
