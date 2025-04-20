@@ -1,0 +1,161 @@
+
+# 🚀 Setup Kubernetes Cluster on Amazon EKS
+
+This guide helps you set up an Amazon EKS Kubernetes cluster using `eksctl` and `kubectl` on AWS EC2.
+addition we can check in medium blogs
+---
+
+## 📸 Prerequisites
+
+- AWS Account
+- IAM Role with Admin permissions
+- EC2 Instance (Amazon Linux 2)
+- Internet access & security groups open on required ports
+
+---
+
+## 📍 Step 1: Launch EC2 Instance
+
+1. Go to EC2 → Launch Instance
+2. Use **Amazon Linux 2 AMI**, `t2.micro`
+3. Enable Auto-assign public IP
+4. Choose/Create a Key Pair
+5. Launch the instance and connect via SSH
+
+![EC2 Launch](images/step1-ec2-launch.png)
+
+---
+
+## ⚙️ Step 2: Install AWS CLI (v2.11.3+)
+
+```bash
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install
+aws --version
+```
+
+![AWS CLI Installed](images/step2-aws-cli-version.png)
+
+---
+
+## ☸️ Step 3: Install `kubectl`
+
+```bash
+curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.26.4/2023-05-11/bin/linux/amd64/kubectl
+chmod +x ./kubectl
+sudo mv ./kubectl /usr/local/bin
+kubectl version --client
+```
+
+![Kubectl Installed](images/step3-kubectl-installed.png)
+
+---
+
+## 🔧 Step 4: Install `eksctl`
+
+```bash
+curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+sudo mv /tmp/eksctl /usr/local/bin
+eksctl version
+```
+
+![eksctl Installed](images/step4-eksctl-installed.png)
+
+---
+
+## 🔐 Step 5: IAM Role for EC2
+
+- Go to IAM → Create Role → Trusted Entity: EC2
+- Attach **AdministratorAccess**
+- Assign role to your EC2 instance
+
+![IAM Role Setup](images/step5-iam-role.png)
+
+---
+
+## 🏗️ Step 6: Create EKS Cluster
+
+```bash
+eksctl create cluster --name my-demo-cluster \
+  --region us-east-1 \
+  --node-type t2.small
+```
+
+> Wait 15-20 minutes for provisioning.
+
+![Cluster Created](images/step6-cluster-created.png)
+
+---
+
+## 🔬 Step 7: Verify Cluster
+
+```bash
+kubectl get nodes
+kubectl get all
+```
+
+![Cluster Verified](images/step7-kubectl-get-nodes.png)
+
+---
+
+## 🧪 Step 8: Run a Pod
+
+```bash
+kubectl run webapp --image=httpd
+```
+
+![Webapp Pod](images/step8-webapp-pod.png)
+
+---
+
+## 📦 Step 9: Deploy and Expose Nginx
+
+```bash
+kubectl create deployment demo-nginx --image=nginx --replicas=2 --port=80
+kubectl expose deployment demo-nginx --port=80 --type=LoadBalancer
+```
+
+![Nginx Deployment](images/step9-nginx-deployment.png)
+
+---
+
+## 🧹 Step 10: Clean Up
+
+```bash
+eksctl delete cluster my-demo-cluster --region us-east-1
+```
+
+![Cluster Deleted](images/step10-cluster-delete.png)
+
+---
+
+## ✅ Conclusion
+
+You've successfully set up and exposed a Kubernetes deployment using Amazon EKS.
+
+---
+
+## 📁 Directory Structure
+
+```
+.
+├── README.md
+└── images/
+    ├── step1-ec2-launch.png
+    ├── step2-aws-cli-version.png
+    ├── ...
+```
+
+---
+
+## 🙌 Author
+
+**Mudasir** – AWS Community Builder | DevOps Engineer  
+Blog: [Medium Post](https://medium.com)
+
+```
+
+---
+
+Let me know if you'd like me to generate all image placeholders based on your screenshots or create a zip file of the folder structure ready to upload to GitHub.
